@@ -1,0 +1,42 @@
+package com.example.demo.controllers;
+
+import com.example.demo.persistence.model.User;
+import com.example.demo.persistence.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+/**
+ * Created by Paweł on 2018-11-30.
+ */
+@RestController
+public class UserController {
+    @Autowired
+    private UserRepository userRepository;
+
+    @PutMapping("/users/add/{name}")
+    @Transactional
+    public Long saveUser(@PathVariable("name") String name) {
+        User u = userRepository.findByName(name);
+
+        if (u == null) {
+            u = new User();
+            u.setName(name);
+            u.setPassword(name + 1);
+
+            userRepository.saveAndFlush(u);
+        }
+
+        return u.getId();
+    }
+
+    @GetMapping("/users/all")
+    public List<User> getUsers() {
+        return userRepository.findAll();
+    }
+}
