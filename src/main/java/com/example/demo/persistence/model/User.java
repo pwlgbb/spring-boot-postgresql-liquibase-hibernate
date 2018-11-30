@@ -1,25 +1,29 @@
 package com.example.demo.persistence.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by Paweł on 2018-11-29.
  */
 @Entity
-@Table(name = "\"user\"")
+@Table(name = "\"user\"", uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank
     private String name;
 
+    @NotBlank
     private String password;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "\"user\""), inverseJoinColumns = @JoinColumn(name = "role"))
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -43,5 +47,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

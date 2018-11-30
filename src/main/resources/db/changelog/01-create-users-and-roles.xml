@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="01" author="pawelg">
+        <createSequence sequenceName="hibernate_sequence"
+                        incrementBy="1"
+                        minValue="1"
+                        maxValue="9223372036854775807"/>
+        <createTable tableName="user">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="role">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="user_role">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user" type="bigint"/>
+            <column name="role" type="bigint"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="user_role"
+                                 baseColumnNames="user"
+                                 constraintName="fk_user_role_user"
+                                 referencedTableName="user"
+                                 referencedColumnNames="id"
+                                 onUpdate="CASCADE"
+                                 onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="user_role"
+                                 baseColumnNames="role"
+                                 constraintName="fk_user_role_role"
+                                 referencedTableName="role"
+                                 referencedColumnNames="id"
+                                 onUpdate="CASCADE"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>
